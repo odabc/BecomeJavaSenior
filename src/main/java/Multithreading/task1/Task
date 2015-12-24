@@ -1,0 +1,65 @@
+Тот, кто выполнит правильно абсолютно все задания – получит БЕСПЛАТНО месяц менторинга в пакете “Ментор-Padawan”.
+
+Задания будут появляться до 30 июля 2015.
+
+    Решение нужно разместить в GitHub или BitBucket. (как раз подучите git)
+    Ссылку на репозиторий опубликовать у себя в соц. сети (facebook или vk) c текстом: "Решение задачи от BecomeJavaSenior".
+    Ссылку на пост и объяснения, почему такое решение – отправить на becomejavasenior[at]gmail.com.
+
+Ваше решение будет просмотрено, а все замечания – высланы в ответ.
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+/**
+ * Есть счетчик, подсчитывающий количество вызовов.
+ * <p>
+ * Почему счетчик показывает разные значения и не считает до конца?
+ * Как это можно исправить не используя synchronized?
+ * <p>
+ * Попробуйте закомментировать обращение к yield().
+ * Измениться ли значение?
+ */
+public class AtomicCounterTutor {
+    int counter = 0;
+
+    class TestThread implements Runnable {
+        String threadName;
+
+        public TestThread(String threadName) {
+            this.threadName = threadName;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 10000; i++) {
+                counter++;
+                Thread.yield();
+            }
+        }
+    }
+
+    @Test
+    public void testThread() {
+        List<Thread> threads = new ArrayList<Thread>();
+        for (int i = 0; i < 100; i++) {
+            threads.add(new Thread(new TestThread("t" + i)));
+        }
+        System.out.println("Starting threads");
+        for (int i = 0; i < 100; i++) {
+            threads.get(i).start();
+        }
+        try {
+            for (int i = 0; i < 100; i++) {
+                threads.get(i).join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Counter=" + counter);
+
+    }
+
+}
